@@ -38,6 +38,7 @@ class PartsManager {
   void set_checked_prefix_size(int64 size);
   int32 set_streaming_offset(int64 offset, int64 limit);
   void set_streaming_limit(int64 limit);
+  void remove_ready_parts(int64 offset, int64 limit); //added
 
   int64 get_checked_prefix_size() const;
   int64 get_unchecked_ready_prefix_size();
