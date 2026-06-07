@@ -5281,4 +5281,22 @@ void FileManager::tear_down() {
 
 std::atomic<int64> FileManager::internal_load_id_;
 
+// Add the handler for your custom TL API command
+void FileManager::force_download_file_region(FileId file_id, int64 offset, int64 limit) {
+  auto *file_node = get_file_node(file_id);
+  if (file_node == nullptr) return;
+
+  // --- THE AMNESIA HACK ---
+  // Bypass the size lock so TDLib stops thinking the file is 100% finished
+  file_node->local_.is_downloaded = false;
+
+  if (file_node->download_id_ != 0) {
+    // The downloader is actively running. Inject the hole wipe natively!
+    G()->download_manager()->force_redownload(file_node->download_id_, offset, limit);
+  } else {
+    // Downloader was asleep/closed. Wake it up at priority 32 (Streaming).
+    download_file(file_id, 32, offset, limit, nullptr);
+  }
+}
+
 }  // namespace td
