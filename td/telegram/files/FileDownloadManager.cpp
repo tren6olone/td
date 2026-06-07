@@ -202,4 +202,16 @@ void FileDownloadManager::close_node(NodeId node_id) {
   try_stop();
 }
 
+void FileDownloadManager::force_redownload(QueryId query_id, int64 offset, int64 limit) {
+  if (stop_flag_) return;
+  
+  auto it = query_id_to_node_id_.find(query_id);
+  if (it == query_id_to_node_id_.end()) return;
+  
+  auto node = nodes_container_.get(it->second);
+  if (node == nullptr || node->downloader_.empty()) return;
+  
+  send_closure(node->downloader_, &FileDownloader::force_redownload, offset, limit);
+}
+
 }  // namespace td
