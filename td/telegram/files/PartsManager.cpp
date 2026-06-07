@@ -590,5 +590,21 @@ StringBuilder &operator<<(StringBuilder &string_builder, const PartsManager &par
                         << ", part_status_count = " << parts_manager.part_status_.size() << ": "
                         << parts_manager.bitmask_ << ']';
 }
+void PartsManager::remove_ready_parts(int64 offset, int64 limit) {
+  int32 begin_part_id = narrow_cast<int32>(offset / part_size_);
+  int32 end_part_id = limit <= 0 ? part_count_ : narrow_cast<int32>((offset + limit - 1) / part_size_) + 1;
+
+  // Erase the "Downloaded" bits for this specific region
+  for (int32 i = begin_part_id; i < end_part_id && i < part_count_; i++) {
+    if (ready_parts_.get(i)) {
+      ready_parts_.reset(i);
+      ready_size_ -= get_part_size(i);
+    }
+  }
+  
+  // Force TDLib to roll back its validation trackers
+  unchecked_ready_prefix_count_ = min(unchecked_ready_prefix_count_, begin_part_id);
+  checked_prefix_size_ = min(checked_prefix_size_, offset);
+}
 
 }  // namespace td
