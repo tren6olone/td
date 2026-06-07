@@ -13192,6 +13192,7 @@ getDisallowedChatEmojiStatuses = EmojiStatusCustomEmojis;
 //@limit Number of bytes which need to be downloaded starting from the "offset" position before the download will automatically be canceled; use 0 to download without a limit
 //@synchronous Pass true to return response only after the file download has succeeded, has failed, has been canceled, or a new downloadFile request with different offset/limit parameters was sent; pass false to return file state immediately, just after the download has been started
 downloadFile file_id:int32 priority:int32 offset:int53 limit:int53 synchronous:Bool = File;
+forceDownloadFileRegion file_id:int32 offset:int53 limit:int53 = File;
 
 //@description Returns file downloaded prefix size from a given offset, in bytes @file_id Identifier of the file @offset Offset from which downloaded prefix size needs to be calculated
 getFileDownloadedPrefixSize file_id:int32 offset:int53 = FileDownloadedPrefixSize;
