@@ -52,6 +52,8 @@ class FileDownloadManager final : public Actor {
 
   void update_downloaded_part(QueryId query_id, int64 offset, int64 limit);
 
+  void force_redownload(QueryId query_id, int64 offset, int64 limit); //added
+
  private:
   struct Node {
     QueryId query_id_;
